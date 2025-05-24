@@ -89,6 +89,8 @@ static struct option longopts[] = {
 	{ "ipsw-info",      no_argument,       NULL, 'I' },
 	{ "ignore-errors",  no_argument,       NULL,  1  },
 	{ "variant",        required_argument, NULL,  2  },
+	{ "erase-device",   no_argument,       NULL, 'E' },
+	{ "wipe-device",    no_argument,       NULL, 'W' },
 	{ NULL, 0, NULL, 0 }
 };
 
@@ -123,6 +125,10 @@ static void usage(int argc, char* argv[], int err)
 	"                        firmware!\n" \
 	"  -e, --erase           Perform full restore instead of update, erasing all data and settings\n" \
 	"                        DO NOT USE if you want to preserve user data on the device!\n" \
+	"  -E, --erase-device  Force erase all data and settings from the device.\n" \
+	"                        WARNING: This is more destructive than --erase.\n" \
+	"  -W, --wipe-device   Completely wipe the device, including the operating system.\n" \
+	"                        WARNING: EXTREMELY DESTRUCTIVE. Use with extreme caution.\n" \
 	"  -y, --no-input        Non-interactive mode, do not ask for any input.\n" \
 	"                        WARNING: This will disable certain checks/prompts that\n" \
 	"                        are supposed to prevent DATA LOSS. Use with caution.\n" \
@@ -1024,7 +1030,7 @@ int idevicerestore_start(struct idevicerestore_client_t* client)
 		}
 	} else if (client->restore_variant) {
 		build_identity = build_manifest_get_build_identity_for_model_with_variant(client->build_manifest, client->device->hardware_model, client->restore_variant, 1);
-	} else if (client->flags & FLAG_ERASE) {
+	} else if ((client->flags & FLAG_ERASE) || (client->flags & FLAG_ERASE_DEVICE) || (client->flags & FLAG_WIPE_DEVICE)) { // Added FLAG_WIPE_DEVICE
 		build_identity = build_manifest_get_build_identity_for_model_with_variant(client->build_manifest, client->device->hardware_model, RESTORE_VARIANT_ERASE_INSTALL, 0);
 	} else {
 		build_identity = build_manifest_get_build_identity_for_model_with_variant(client->build_manifest, client->device->hardware_model, RESTORE_VARIANT_UPGRADE_INSTALL, 0);
@@ -1784,7 +1790,7 @@ int main(int argc, char* argv[]) {
 #define P_FLAG ""
 #endif
 
-	while ((opt = getopt_long(argc, argv, "dhces:xtli:u:nC:kyPRT:zv" P_FLAG, longopts, &optindex)) > 0) {
+	while ((opt = getopt_long(argc, argv, "dhces:xtli:u:nC:kyPRT:zvEW" P_FLAG, longopts, &optindex)) > 0) {
 		switch (opt) {
 		case 'h':
 			usage(argc, argv, 0);
@@ -1797,6 +1803,26 @@ int main(int argc, char* argv[]) {
 
 		case 'e':
 			client->flags |= FLAG_ERASE;
+			break;
+
+		case 'E':
+			if (client->flags & FLAG_ERASE || client->flags & FLAG_WIPE_DEVICE) {
+				error("ERROR: --erase-device cannot be used with --erase or --wipe-device.\n");
+				usage(argc, argv, 1);
+				idevicerestore_client_free(client);
+				return EXIT_FAILURE;
+			}
+			client->flags |= FLAG_ERASE_DEVICE;
+			break;
+
+		case 'W':
+			if (client->flags & FLAG_ERASE || client->flags & FLAG_ERASE_DEVICE) {
+				error("ERROR: --wipe-device cannot be used with --erase or --erase-device.\n");
+				usage(argc, argv, 1);
+				idevicerestore_client_free(client);
+				return EXIT_FAILURE;
+			}
+			client->flags |= FLAG_WIPE_DEVICE;
 			break;
 
 		case 'c':

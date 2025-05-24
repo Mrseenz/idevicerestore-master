@@ -40,7 +40,7 @@ Some key features are:
 - **DFU:** Put devices in pwned DFU mode *(limera1n devices only)*
 - **AP Ticket:** Use custom AP ticket from a file
 - **Cross-Platform:** Tested on Linux, macOS, Windows and Android platforms
-- **Erase device:** Securely erase all data from the device.
+- **Erase device:** Force erase all data and settings from the device.
 - **Wipe device:** Completely wipe the device, including the operating system.
 - **History:** Developed since 2010
 

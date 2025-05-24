@@ -46,6 +46,8 @@ extern "C" {
 #define FLAG_ALLOW_RESTORE_MODE (1 << 10)
 #define FLAG_NO_RESTORE      (1 << 11)
 #define FLAG_IGNORE_ERRORS   (1 << 12)
+#define FLAG_ERASE_DEVICE    (1 << 13)
+#define FLAG_WIPE_DEVICE     (1 << 14)
 
 #define RESTORE_VARIANT_ERASE_INSTALL      "Erase Install (IPSW)"
 #define RESTORE_VARIANT_UPGRADE_INSTALL    "Upgrade Install (IPSW)"

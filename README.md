@@ -29,9 +29,9 @@ availability of SHSH blobs from Apple for signing the firmware files.
 
 Some key features are:
 
-- **Restore:** Update firmware on iOS devices
+- **Restore:** Update firmware on iOS devices while bypassing verifications and skipping setup.app during restore
 - **Firmware:** Use official IPSW firmware archive file or a directory as source
-- **Update:** Allows updating the device by default or erasing all data
+- **Update:** Allows updating the device by default or erasing all data and skipping setup.app during update
 - **Download:** On demand download of latest available firmware for a device
 - **Cache:** Downloaded firmware files are cached locally
 - **Custom Firmware:** Restore custom firmware files *(requires bootrom exploit)*
@@ -40,7 +40,7 @@ Some key features are:
 - **DFU:** Put devices in pwned DFU mode *(limera1n devices only)*
 - **AP Ticket:** Use custom AP ticket from a file
 - **Cross-Platform:** Tested on Linux, macOS, Windows and Android platforms
-- **Erase device:** Securely erase all data from the device.
+- **Erase device:** force erase all data and settings from the device.
 - **Wipe device:** Completely wipe the device, including the operating system.
 - **History:** Developed since 2010
 
